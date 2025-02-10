@@ -1,0 +1,118 @@
+table {
+  width: 85%;
+  margin-left: 30px;
+  border-collapse: collapse; /* Remove space between cells */
+  font-family: Arial, sans-serif;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  border: 1px solid #dddddd; /* Add border to the table */
+  margin-bottom: 50px;
+}
+
+/* Table header styling */
+thead {
+  background-color: #2c3e50; /* Dark blue-gray */
+  color: white;
+}
+
+thead th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #34495e; /* Slightly darker border */
+  border-right: 1px solid #dddddd; /* Add vertical lines between headers */
+}
+
+thead th:first-child {
+  width: 120px; /* Fixed width for the first header column */
+}
+
+thead th:last-child {
+  border-right: none; /* Remove border from the last header */
+}
+
+/* Table body styling */
+tbody tr {
+  border-bottom: 1px solid #dddddd; /* Light gray border between rows */
+}
+
+
+tbody tr:hover {
+  background-color: #f1f1f1; /* Hover effect for rows */
+}
+
+/* Table cell styling */
+td, th {
+  padding: 12px 15px;
+  text-align: left;
+  border-right: 1px solid #dddddd; /* Add vertical lines between cells */
+  font-size: 35px;
+}
+
+th:first-child {
+  width: 120px; /* Fixed width for the first column */
+  text-align: center; /* Center-align content in the first column */
+}
+
+td:last-child, th:last-child {
+  border-right: none; /* Remove border from the last cell */
+}
+
+/* Button styling */
+button {
+  background-color: #3498db; /* Blue */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2980b9; /* Darker blue on hover */
+}
+
+/* Specific button styles */
+button[disabled] {
+  background-color: #bdc3c7; /* Gray for disabled buttons */
+  cursor: not-allowed;
+}
+.thin-row {
+  height: 1px; /* Adjust this for your desired thinness */
+  font-size: 0; /* Optionally hide text */
+  padding: 0;
+  line-height: 0;
+  overflow: hidden; /* Ensure no content is visible */
+  background-color: #bdc3c7;
+}
+
+/* Input styling */
+input[type="number"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  margin: 5px;
+}
+
+/* Styling for the colored cells */
+.red-cell {
+  background-color: #ff6b6b; /* Light red */
+  color: white;
+}
+
+.yellow-cell {
+  background-color: #f9ca24; /* Light yellow */
+  color: black;
+}
+
+.green-cell {
+  background-color: #1dd1a1; /* Light green */
+  color: white;
+}
+.Selected-cell {
+  background-color: #3498db; /* Light green */
+  color: white;
+}
