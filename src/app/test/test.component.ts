@@ -22,6 +22,7 @@ export class TestComponent implements OnInit {
   TableDataSavedInLocalstorage: ITableRow[] = []
   SearchValue: string = '';
   ValueOftheRow = 0;
+  ban = 0;
   protected readonly Number = Number;
   readonly #changeDetectorRef = inject(ChangeDetectorRef);
   readonly #exportExcelService = inject(ExportExcelService);

@@ -1,4 +1,3 @@
-
 <table #myTable id="myTable">
   <thead>
   <tr>
@@ -8,7 +7,7 @@
 
     @for (th of TableHeaderArray; track th; let i = $index) {
       <th>
-        <button (click)="addHeaderColumnNextTo(i)">{{th}}</button>
+        <button (click)="addHeaderColumnNextTo(i)">{{ th }}</button>
         <button (click)="deleteHeaderColumn(i)">DEL</button>
         <button (click)="SortHeaderColumn(i)">SORT</button>
         <button (click)="AddColumnValues(i)">SUM</button>
@@ -30,12 +29,13 @@
           <button (click)="AddCellValues(row.id)">SUM</button>
           <button [hidden]="row.isSelected" (click)="SortRow(i)">SORT</button>
           <button (click)="deleteTableRow(i)">DEL</button>
-          <button (click)="addRowBelow(i)">{{row.id}}</button>
+          <button (click)="addRowBelow(i)">{{ row.id }}</button>
         </th>
 
 
         @for (cell of row.cells; track cell.id) {
-          <td [hidden]="row.isSelected" [contentEditable]="true" [textContent]="cell.value" (input)="updateCellValue(row.id, cell.id, $event)"
+          <td [hidden]="row.isSelected" [contentEditable]="true" [textContent]="cell.value"
+              (input)="updateCellValue(row.id, cell.id, $event)"
               [ngClass]="{
       'red-cell': isNumber(cell.value) && Number(cell.value) < 0,
       'yellow-cell': isNumber(cell.value) && Number(cell.value) >= 0 && Number(cell.value) <= 10,
@@ -62,13 +62,13 @@
 <button (click)="exportToExcel()">Export to Excel</button>
 
 <div>
-<button (click)="addRow()">Set Number of Rows to {{ rowInput }}</button>
-<input type="number" [(ngModel)]="rowInput"/>
+  <button (click)="addRow()">Set Number of Rows to {{ rowInput }}</button>
+  <input type="number" [(ngModel)]="rowInput"/>
 </div>
 
 <div>
-<button (click)="addHeader()"> Set Number of Headers to {{ headerInput }}</button>
-<input type="number" [(ngModel)]="headerInput" />
+  <button (click)="addHeader()"> Set Number of Headers to {{ headerInput }}</button>
+  <input type="number" [(ngModel)]="headerInput"/>
 </div>
 
 
@@ -77,9 +77,9 @@
 </div>
 
 <div>
-  <button (click)="SearchForValue(SearchValue)">Select Cells with {{SearchValue}}</button>
+  <button (click)="SearchForValue(SearchValue)">Select Cells with {{ SearchValue }}</button>
   <input [(ngModel)]="SearchValue">
-  <button (click)="DeSelectCells(SearchValue)"> Deselect Cells with {{SearchValue}}</button>
+  <button (click)="DeSelectCells(SearchValue)"> Deselect Cells with {{ SearchValue }}</button>
 </div>
 
 
