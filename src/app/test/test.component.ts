@@ -1,21 +1,10 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef } from '@angular/core';
+import {ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {CommonModule} from '@angular/common';
 import {ExportExcelService} from '../services/export-excel.service';
+import {ITableRow} from './interfaces/ITableRow';
+import {ITableCell} from './interfaces/ITableCell';
 
-
-interface TableCell {
-  id: number;
-  value: string;
-  isSelected: boolean;
-}
-
-interface TableRow {
-  id: number;
-  cells: TableCell[];
-  isSelected: boolean;
-}
 
 @Component({
   selector: 'app-test',
@@ -25,77 +14,53 @@ interface TableRow {
   styleUrls: ['./test.component.css'],
 })
 
-export class TestComponent {
-
-  @ViewChild('myTable') table!: ElementRef;
-
-
+export class TestComponent implements OnInit {
   TableHeaderArray: number[] = [];
-  TableRowArray: TableRow[] = [];
+  TableRowArray: ITableRow[] = [];
   rowInput: number = 1;
   headerInput: number = 1;
-  TableDataSavedInLocalstorage:TableRow[] = []
+  TableDataSavedInLocalstorage: ITableRow[] = []
   SearchValue: string = '';
+  ValueOftheRow = 0;
+  protected readonly Number = Number;
+  readonly #changeDetectorRef = inject(ChangeDetectorRef);
+  readonly #exportExcelService = inject(ExportExcelService);
 
-
-
-
-
-  constructor(private cdr: ChangeDetectorRef,
-              private exportExcelService: ExportExcelService,) {
+  ngOnInit() {
     this.initializeTable();
-
   }
-
 
   initializeTable() {
     this.TableHeaderArray = [1, 2, 3, 4, 5];
     this.TableRowArray = this.generateRows(5, this.TableHeaderArray.length);
   }
 
-exportToExcel(){
-    this.exportExcelService.exportTableToExcel('myTable', 'ExcelMujxcel')
-}
+  exportToExcel() {
+    this.#exportExcelService.exportTableToExcel('myTable', 'ExcelMujxcel')
+  }
 
-
-  generateRows(rowCount: number, cellCount: number): TableRow[] {
-    console.log("generateRows")
+  generateRows(rowCount: number, cellCount: number): ITableRow[] {
     const nextRowId = this.TableRowArray.length > 0 ? this.TableRowArray[this.TableRowArray.length - 1].id + 1 : 1;
-    return Array.from({ length: rowCount }, (_, rowIndex) => ({
-      id: nextRowId + rowIndex,
-      cells: Array.from({ length: cellCount }, (_, cellIndex) => ({
-        id: cellIndex + 1,
-        value: '',
-        isSelected: false,
-      })),
-      isSelected: false,
+    return Array.from({length: rowCount}, (_, rowIndex) => ({
+      id: nextRowId + rowIndex, cells: Array.from({length: cellCount}, (_, cellIndex) => ({
+        id: cellIndex + 1, value: '', isSelected: false,
+      })), isSelected: false,
     }));
   }
 
-
-  ToggleRowVisibility(rowIndex:number){
+  ToggleRowVisibility(rowIndex: number) {
 
     this.TableRowArray[rowIndex].isSelected = !this.TableRowArray[rowIndex].isSelected
-    console.log(rowIndex)
-    console.log(this.TableRowArray[rowIndex].isSelected)
 
-}
-
-
+  }
 
   addRowBelow(rowIndex: number) {
     const currentRowNumber = this.TableRowArray[rowIndex].id;
-    const newRow: TableRow = {
-      id: currentRowNumber + 1,
-      cells: this.TableHeaderArray.map((_, index) => ({
-        id: index + 1,
-        value: '',
-        isSelected: false,
-      })),
-      isSelected: false,
+    const newRow: ITableRow = {
+      id: currentRowNumber + 1, cells: this.TableHeaderArray.map((_, index) => ({
+        id: index + 1, value: '', isSelected: false,
+      })), isSelected: false,
     };
-
-
 
 
     this.TableRowArray.splice(rowIndex + 1, 0, newRow);
@@ -106,33 +71,31 @@ exportToExcel(){
 
   SearchForValue(SearchValue: string) {
 
-      for (let i = 0; i < this.TableRowArray.length; i++) {
-
-        for (let j = 0; j < this.TableRowArray[i].cells.length; j++) {
-
-          if (this.TableRowArray[i].cells[j].value === this.SearchValue){
-            this.TableRowArray[i].cells[j].isSelected = true
-            console.log(3 , this.TableRowArray[i].cells[j].isSelected);
-          }
-        }
-      }
-  }
-  DeSelectCells(SearchValue: string){
     for (let i = 0; i < this.TableRowArray.length; i++) {
 
       for (let j = 0; j < this.TableRowArray[i].cells.length; j++) {
-        if (SearchValue === ''){
-          this.TableRowArray[i].cells[j].isSelected = false
-        }
 
-        if (this.TableRowArray[i].cells[j].value === this.SearchValue){
-          this.TableRowArray[i].cells[j].isSelected = false
-          console.log(3 , this.TableRowArray[i].cells[j].isSelected);
+        if (this.TableRowArray[i].cells[j].value === this.SearchValue) {
+          this.TableRowArray[i].cells[j].isSelected = true
         }
       }
     }
   }
 
+  DeSelectCells(SearchValue: string) {
+    for (let i = 0; i < this.TableRowArray.length; i++) {
+
+      for (let j = 0; j < this.TableRowArray[i].cells.length; j++) {
+        if (SearchValue === '') {
+          this.TableRowArray[i].cells[j].isSelected = false
+        }
+
+        if (this.TableRowArray[i].cells[j].value === this.SearchValue) {
+          this.TableRowArray[i].cells[j].isSelected = false
+        }
+      }
+    }
+  }
 
   SortRow(index: number) {
     const row = this.TableRowArray[index];
@@ -162,9 +125,7 @@ exportToExcel(){
       cell.id = cellIndex + 1;
     });
 
-    console.log('Sorted Row:', row);
   }
-
 
   SortHeaderColumn(Index: number) {
     if (!this.TableRowArray || this.TableRowArray.length === 0) {
@@ -180,8 +141,7 @@ exportToExcel(){
 
     // Extract the column values at the specified index
     const columnValues = this.TableRowArray.map((row) => ({
-      value: Number(row.cells[Index]?.value || 0),
-      row: row,
+      value: Number(row.cells[Index]?.value || 0), row: row,
     }));
 
 
@@ -193,14 +153,9 @@ exportToExcel(){
       rowToUpdate.cells[Index].value = sortedItem.value.toString();
     });
 
-    console.log('Column sorted by index:', Index, this.TableRowArray);
   }
 
-
-
-
   addHeaderColumnNextTo(HeaderIndex: number) {
-    console.log('Adding header column next to index', HeaderIndex);
 
 
     this.TableHeaderArray.splice(HeaderIndex + 1, 0, HeaderIndex + 1);
@@ -213,9 +168,7 @@ exportToExcel(){
 
     for (let row of this.TableRowArray) {
       row.cells.splice(HeaderIndex + 1, 0, {
-        id: HeaderIndex + 1,
-        value: '',
-        isSelected: false,
+        id: HeaderIndex + 1, value: '', isSelected: false,
       });
 
 
@@ -224,8 +177,8 @@ exportToExcel(){
       }
     }
 
-    console.log('Updated table structure:', this.TableHeaderArray, this.TableRowArray);
   }
+
   deleteHeaderColumn(HeaderIndex: number) {
 
     this.TableHeaderArray.splice(HeaderIndex, 1);
@@ -246,7 +199,6 @@ exportToExcel(){
       this.TableHeaderArray[i] = i + 1;
     }
 
-    console.log('Spalte gelöscht. Aktualisierte Tabelle:', this.TableRowArray);
   }
 
   deleteTableRow(rowIndex: number) {
@@ -258,19 +210,12 @@ exportToExcel(){
       this.TableRowArray[i].id = i + 1;
     }
 
-    console.log('Zeile gelöscht. Aktualisierte Tabelle:', this.TableRowArray);
   }
 
-
-
-
-
-  test(){
-    console.log(this.TableRowArray)
+  test() {
   }
 
   addRow() {
-    console.log(1 , this.TableRowArray);
     const targetRowCount = this.rowInput;
     const currentRowCount = this.TableRowArray.length;
 
@@ -281,23 +226,17 @@ exportToExcel(){
     } else if (targetRowCount < currentRowCount) {
       this.TableRowArray.splice(targetRowCount, currentRowCount - targetRowCount);
     } else {
-      console.log('The table already has the requested number of rows.');
     }
-    console.log(2, this.TableRowArray);
   }
 
-
   addHeader() {
-    this.TableHeaderArray = Array.from({ length: this.headerInput }, (_, i) => i + 1);
+    this.TableHeaderArray = Array.from({length: this.headerInput}, (_, i) => i + 1);
     this.TableRowArray.forEach((row) => {
       row.cells = this.TableHeaderArray.map((_, index) => ({
-        id: index + 1,
-        value: row.cells[index]?.value || '',
-        isSelected: false,
+        id: index + 1, value: row.cells[index]?.value || '', isSelected: false,
       }));
     });
   }
-
 
   updateCellValue(rowId: number, cellId: number, event: Event) {
     const row = this.TableRowArray.find((r) => r.id === rowId);
@@ -310,12 +249,9 @@ exportToExcel(){
     }
   }
 
-
   logTableData() {
     this.TableDataSavedInLocalstorage = this.TableRowArray
-    console.log('Table Data:', this.TableDataSavedInLocalstorage);
     localStorage.setItem('tableData', JSON.stringify(this.TableDataSavedInLocalstorage));
-    console.log('Table Data:', JSON.stringify(this.TableDataSavedInLocalstorage));
   }
 
   fillTableData() {
@@ -325,60 +261,51 @@ exportToExcel(){
         const parsedData = JSON.parse(savedData);
 
 
-        this.TableRowArray = parsedData.map((row: any, rowIndex: number) => ({
-          id: row.id ?? rowIndex + 1,
-          cells: row.cells.map((cell: any, cellIndex: number) => ({
-            id: cell.id ?? cellIndex + 1,
-            value: cell.value || '',
-            isSelected: cell.isSelected,
+        this.TableRowArray = parsedData.map((row: ITableRow, rowIndex: number) => ({
+          id: row.id ?? rowIndex + 1, cells: row.cells.map((cell: ITableCell, cellIndex: number) => ({
+            id: cell.id ?? cellIndex + 1, value: cell.value || '', isSelected: cell.isSelected,
           })),
         }));
 
 
         const maxCells = Math.max(...this.TableRowArray.map(row => row.cells.length), 0);
-        this.TableHeaderArray = Array.from({ length: maxCells }, (_, i) => i + 1);
+        this.TableHeaderArray = Array.from({length: maxCells}, (_, i) => i + 1);
 
-        console.log('Loaded table data:', this.TableRowArray);
-        this.cdr.detectChanges();
+        this.#changeDetectorRef.detectChanges();
       } catch (error) {
         console.error('Error loading table data:', error);
         this.initializeTable();
       }
     } else {
-      console.log('No saved data found. Initializing table with default data.');
       this.initializeTable();
     }
   }
 
-
-
   sortTableData() {
 
     this.TableRowArray.forEach(row => {
-        row.cells.sort((cellA, cellB) => {
-          const valueA = cellA.value || '';
-          const valueB = cellB.value || '';
+      row.cells.sort((cellA, cellB) => {
+        const valueA = cellA.value || '';
+        const valueB = cellB.value || '';
 
 
-          const numA = Number(valueA);
-          const numB = Number(valueB);
+        const numA = Number(valueA);
+        const numB = Number(valueB);
 
 
-          if (!isNaN(numA) && !isNaN(numB)) {
-            return numA - numB;
-          }
+        if (!isNaN(numA) && !isNaN(numB)) {
+          return numA - numB;
+        }
 
 
-          return valueA.localeCompare(valueB);
-        });
-        row.cells.forEach((cell, index) => {
-          cell.id = index + 1;
+        return valueA.localeCompare(valueB);
+      });
+      row.cells.forEach((cell, index) => {
+        cell.id = index + 1;
 
-        });
+      });
 
-        console.log('Sorted Table Data:', this.TableRowArray);
-      }
-    )
+    })
   }
 
   isNumber(value: string): boolean {
@@ -386,18 +313,9 @@ exportToExcel(){
     return !isNaN(Number(value)) && value.trim() !== '';
   }
 
-  protected readonly Number = Number;
-
-
-
-      ValueOftheRow = 0;
-       RowNumber = 0;
-
-
   AddCellValues(index: number) {
     this.ValueOftheRow = 0;
     let RowNumberData = 0;
-    console.log(1);
 
     RowNumberData = index - 1;
 
@@ -412,14 +330,10 @@ exportToExcel(){
         this.ValueOftheRow += numericValue;
       }
 
-      console.log(2);
     }
 
     let NumberOfCells = this.TableRowArray[RowNumberData].cells.length - 1;
     this.TableRowArray[RowNumberData].cells[NumberOfCells].value = this.ValueOftheRow.toString();
-
-    console.log('value is ' + this.ValueOftheRow);
-    console.log(3);
   }
 
 
@@ -449,12 +363,7 @@ exportToExcel(){
 
 
     this.TableRowArray[this.TableRowArray.length - 1].cells[index].value = columnSum.toString();
-
-    console.log(`Column ${index} sum: ${columnSum}`);
-    console.log('Updated Table:', this.TableRowArray);
   }
-
-
 
 
   AddCellValuesForAllRows() {
@@ -481,10 +390,8 @@ exportToExcel(){
 
       row.cells[row.cells.length - 1].value = rowSum.toString();
 
-      console.log(`Row ${rowIndex + 1} value is: ${rowSum}`);
     }
 
-    console.log('Updated Table:', this.TableRowArray);
   }
 
 
