@@ -1,4 +1,16 @@
-<table #myTable id="myTable">
+<div>
+  <button (click)="addHeader()"> Set Number of Headers to {{ headerInput }}</button>
+  <input type="number" [(ngModel)]="headerInput"/>
+</div>
+<div>
+  <button (click)="addRow()">Set Number of Rows to {{ rowInput }}</button>
+  <input type="number" [(ngModel)]="rowInput"/>
+  <button (click)="AddCellValuesForAllRows()">Sums of Rows</button>
+  <button (click)="SearchForValue()">Select Cells with {{ SearchValue }}</button>
+  <input [(ngModel)]="SearchValue">
+  <button (click)="DeSelectCells(SearchValue)"> Deselect Cells with {{ SearchValue }}</button>
+</div>
+<table id="myTable">
   <thead>
   <tr>
     <th></th>
@@ -53,34 +65,15 @@
 
 </table>
 
-<button (click)="test()">
-  Show the Array
-</button>
 <button (click)="logTableData()">Log Table Data</button>
 <button (click)="fillTableData()">Fill Table</button>
 <button (click)="sortTableData()">Sort Table</button>
 <button (click)="exportToExcel()">Export to Excel</button>
 
-<div>
-  <button (click)="addRow()">Set Number of Rows to {{ rowInput }}</button>
-  <input type="number" [(ngModel)]="rowInput"/>
-</div>
-
-<div>
-  <button (click)="addHeader()"> Set Number of Headers to {{ headerInput }}</button>
-  <input type="number" [(ngModel)]="headerInput"/>
-</div>
+<button (click)="addRolesToTable()">API</button>
 
 
-<div>
-  <button (click)="AddCellValuesForAllRows()">Sums of Rows</button>
-</div>
 
-<div>
-  <button (click)="SearchForValue(SearchValue)">Select Cells with {{ SearchValue }}</button>
-  <input [(ngModel)]="SearchValue">
-  <button (click)="DeSelectCells(SearchValue)"> Deselect Cells with {{ SearchValue }}</button>
-</div>
 
 
 
